@@ -114,6 +114,11 @@ Those values are used by the widget to display the current status of the monitor
 - **Send Report**: Sends a manual health report.
 - **Copy Details**: Copies the health report to the clipboard.
 
+
+#### Copy Details
+This button copy the metric details into the clipboard with additional information like the current page, the browser and the evaluation date. 
+Metrics are refreshed and pushed to any service (if configured) before being copied into the user clipboard.
+
 ---
 
 ## Developer Notes

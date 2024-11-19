@@ -1,4 +1,4 @@
-# Health Check Widget
+# CheckMate Widget
 
 ## Requirements
 This widget needs bootstrap and font-awesome to work correctly, some elements are rendered using buttons classes like:

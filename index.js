@@ -439,9 +439,6 @@ function getDetails() {
 
     const additionalDetails = "\nBrowser: " + detectBrowser() +
         "\nCurrent Page: " + window.location.href +
-        "\nLocation: [Your Country]" +
-        "\nWorking from: [Office/Home]" +
-        "\nOther details: [Insert any other useful information]" +
         "\nDate: " + healthCheckFormattedDate();
 
     return latencies + additionalDetails;

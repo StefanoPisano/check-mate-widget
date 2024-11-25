@@ -362,15 +362,6 @@ class CheckMate {
             return container;
         }
 
-        const createInfoButton = () => {
-            const container = document.getElementById(this.HEALTH_CHECK_FOOTER_UI_CONTAINER_ID);
-            const button = getDocumentationElement("health-check", "healthcheck");
-            container.appendChild(button);
-
-            document.getElementById(this.HEALTH_CHECK_DETAILS_UI_CONTAINER_ID).appendChild(container);
-        }
-
-        createInfoButton();
         createCopyDetailsButton();
         createSendReportButton();
     }

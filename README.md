@@ -11,81 +11,65 @@ This widget needs bootstrap and font-awesome to work correctly, some elements ar
 - btn-default
 - btn-success
 
-## Overview
-The Health Check Widget is a JavaScript-based tool designed to monitor the health of various services in real time. It evaluates the latency and availability of services (both client-side and server-side) and displays results in a compact UI or full-screen mode.
+# CheckMate Health Monitoring
+
+CheckMate is a JavaScript-based health check monitoring system designed to track the latency and status of various services (client or server). It provides an intuitive user interface that displays service statuses, latency information, and includes features like generating reports, copying details, and refreshing metrics at set intervals.
 
 ## Features
-- **Real-Time Health Monitoring**: Tracks service health using customizable thresholds for warnings and critical states.
-- **User Inactivity Detection**: Pauses health checks during user inactivity or when the browser loses focus.
-- **UI Flexibility**: Supports both widget and full-screen modes.
-- **Details & Reporting**: Provides detailed service health data, with options to send reports or copy details to the clipboard.
-- **Customizable Metrics**: Add or modify monitored services easily using the `createMetric` function.
 
----
+- **Real-time health checks**: Continuously monitor the health of services by pinging their endpoints.
+- **Service Status Indicators**: Show status indicators with icons representing the health of each service.
+- **Customizable thresholds**: Set warning and critical thresholds for latency and automatically update service health status.
+- **Full-Screen Mode**: Toggle full-screen mode for more detailed health check views.
+- **Metric Push**: Send the health check data to an external server (push metrics).
+- **Service Details**: View detailed latency and last check time in a table.
+- **Copy Report**: Copy the current health check details to your clipboard.
+- **Send Report**: Manually trigger health checks and send a report to a specified URL.
+- **Responsive Layout**: Works well on both desktop and mobile devices.
 
-## Configuration
+## Installation
 
-### Constants
-- **`HEALTH_CHECK_INTERVAL`**: Frequency of automatic health checks (default: 120,000ms or 2 minutes).
-- **`AUTHTOKEN`**: Authorization token for making authenticated requests. Replace `##PLACE_HERE_YOUR_AUTH_TOKEN` with your token.
-- **`INACTIVITY_TIMEOUT`**: Time of inactivity before stopping health checks (default: 20,000ms or 20 seconds).
+To use CheckMate, simply include the JavaScript file in your HTML, or install it via NPM if you are working within a Node.js environment.
 
-### UI Elements
-The widget uses predefined element IDs and classes to organize the UI. Customize the following IDs and classes if needed:
-- **`HEALTH_CHECK_UI_CONTAINER_ID`**: Main container for the health check widget.
-- **`HEALTH_CHECK_DETAILS_UI_CONTAINER_ID`**: Container for detailed health check data.
-- **Other IDs and classes**: Refer to the code for additional UI element configurations.
-
----
-
-## Setup
 
 ### Include the Script
 Add the widget script to your HTML page:
 ```html
-<script src="path/to/health-check-widget.js" full-screen></script>
+<script src="path/to/health-check-widget.js"></script>
 ```
-- Include the `full-screen` attribute if you want the widget to operate in full-screen mode.
-
-### Customize Metrics
-Define monitored services by modifying the `METRICS` object:
-```javascript
-const METRICS = {
-    SERVICE_ONE: createMetric('service-one-delay', 'API Service One', () => 'service_one/health-check/network', METRIC_TYPE_ENUM.CLIENT, 100, 1000, false, 'ms'),
-    // Add more metrics here
-};
-```
-
----
 
 ## Usage
 
-### Automatic Start
-The widget initializes automatically when the page is ready. It:
-1. Creates the main container.
-2. Sets up health indicators.
-3. Starts periodic health checks.
+### Initialization
 
-### Manual Start/Stop
-Use the following functions for manual control:
-- **Start**: `startAutomaticHealthCheck()` - Initializes the widget.
-- **Stop**: `stopHealthCheck()` - Stops all health checks.
+To create a new instance of `CheckMate`, provide the required parameters for authentication and pushing metrics:
 
----
+```javascript
+const healthCheck = new CheckMate('YOUR_AUTH_TOKEN', 'YOUR_METRICS_PUSH_URL');
+```
 
-## API
+#### Parameters:
+- **authToken**: (String) The authentication token for your API.
+- **pushMetricsUrl**: (String) The URL to push the health metrics.
+- **fullScreen**: (Boolean, optional) Set to `true` for full-screen mode. Default is `false`.
 
-### `createMetric(name, label, endpoint, type, warnThreshold, criticalThreshold, sendMetric, unit)`
-Creates a metric for monitoring.
-- **Parameters**:
-  - `name`: Unique identifier for the metric.
-  - `label`: Display name.
-  - `endpoint`: Function returning the service URL.
-  - `type`: `METRIC_TYPE_ENUM.CLIENT` or `METRIC_TYPE_ENUM.SERVER`.
-  - `warnThreshold`: Latency threshold for warnings.
-  - `criticalThreshold`: Latency threshold for critical state.
-  - `sendMetric`: Whether to send data to the `/metrics` endpoint.
-  - `unit`: Unit of measurement (e.g., `ms`, `μs`).
+### Creating Metrics
+
+You can create custom metrics for monitoring by calling the `createMetric` function:
+
+```javascript
+healthCheck.createMetric(
+    'service1',          // Metric name
+    'Service 1',         // Display label
+    '/api/health',       // API endpoint to check
+    CheckMate.METRIC_TYPE_ENUM.SERVER,  // Metric type (CLIENT/SERVER)
+    100,                 // Warning threshold (in ms)
+    300,                 // Critical threshold (in ms)
+    true,                // Whether to send the metric to external server
+    'ms'                 // Unit of measurement (optional)
+);
+```
+
 
 ### Options
 **type**
@@ -100,47 +84,110 @@ Creates a metric for monitoring.
 
 Those values are used by the widget to display the current status of the monitored service using colors.
 
-## UI Interactions
+### Start Health Monitoring
 
-### Details Table
-- **Status**: Indicates service health with color-coded icons.
-- **Service**: Name of the monitored service.
-- **Type**: Whether the metric is client-side or server-side.
-- **Latency**: Time taken to respond.
-- **Last Check**: Timestamp of the last health check.
+Once metrics are created, you can start health checks:
 
-### Buttons
-- **Toggle Details**: Expands or collapses the details table.
-- **Send Report**: Sends a manual health report.
-- **Copy Details**: Copies the health report to the clipboard.
+```javascript
+healthCheck.start();  // Start monitoring
+```
+
+You can also specify if you want to reinitialize the health check:
+
+```javascript
+healthCheck.start(true); // Reinitialize and start fresh
+```
+
+You can call the function `hasBeenAlreadyInitialized()` to check if the widget has been already initialized with all the metrics, based on the return value, which is a boolean, you can decide if initialize it again or not.
+
+```javascript
+checkMate.hasBeenAlreadyInitialized();
+```
+
+**Example:**
+```javascript
+const checkMate = new CheckMate("my-token", "/metrics-service", false);
+const hasBeenAlreadyInizialized = checkMate.hasBeenAlreadyInitialized();
+
+if(!hasBeenAlreadyInizialized) {
+    const DEFAULT_METRICS = [
+        checkMate.createMetric('service-one', 'API', '/service-one/network', CheckMate.METRIC_TYPE_ENUM.CLIENT, 100, 1000, false, 'ms'),
+        checkMate.createMetric('service-two', 'DATABASE', '/service-one/database', CheckMate.METRIC_TYPE_ENUM.CLIENT, 100, 1000, true, 'ms')
+    ]
+
+
+    checkMate.setMetrics(DEFAULT_METRICS);
+
+} else {
+    checkMate.loadMetricsFromStorage();
+}
+
+checkMate.start(!hasBeenAlreadyInizialized)
+```
 
 
 #### Copy Details
 This button copy the metric details into the clipboard with additional information like the current page, the browser and the evaluation date. 
 Metrics are refreshed and pushed to any service (if configured) before being copied into the user clipboard.
 
+#### Send Report
+This button copy force a new metric evaluation and it then push them to the configured service.
+
+## Health Check Details
+
+The health check system shows a variety of details, including:
+
+- **Status**: Current status of the service (Good, Warning, Critical, or Failure).
+- **Service**: Name/Label of the service.
+- **Type**: Type of metric (Client Ping or Server Ping).
+- **Latency**: The latency or delay (in milliseconds).
+- **Last Check**: Timestamp of the last health check.
+
+
+## Example
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Health Check</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <script src="path/to/CheckMate.js"></script>
+    <script>
+        // Create instance of CheckMate
+        const healthCheck = new CheckMate('YOUR_AUTH_TOKEN', 'YOUR_METRICS_PUSH_URL');
+
+        // Create metrics
+        healthCheck.createMetric(
+            'service1',
+            'Service 1',
+            '/api/health',
+            CheckMate.METRIC_TYPE_ENUM.SERVER,
+            100,
+            300,
+            true,
+            'ms'
+        );
+
+        // Start monitoring
+        healthCheck.start();
+    </script>
+</body>
+</html>
+```
+
+## Contributing
+
+If you'd like to contribute to this project, feel free to fork the repository and create a pull request with your improvements. Please ensure to write unit tests for any new features or bug fixes.
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
 ---
 
-## Developer Notes
-### Debugging
-Use the console for debugging:
-- `console.debug` logs health check progress.
-- `console.error` logs issues with fetching or reporting metrics.
-
-### Extensibility
-- Add new services by extending the `METRICS` object.
-- Modify health evaluation logic in `evaluateHealth`.
-
----
-
-## Browser Compatibility
-This widget supports modern browsers, including:
-- Chrome
-- Firefox
-- Edge
-- Safari
-
----
-
-## Security
-Ensure the `AUTHTOKEN` value is kept secure and replace the placeholder value in production environments.
+Feel free to adjust or add any information specific to your use case or project!

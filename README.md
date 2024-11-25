@@ -1,5 +1,7 @@
 # CheckMate Widget
 
+CheckMate is a JavaScript-based health check monitoring system designed to track the latency and status of various services (client or server). It provides an intuitive user interface that displays service statuses, latency information, and includes features like generating reports, copying details, and refreshing metrics at set intervals.
+
 ## Requirements
 This widget needs bootstrap and font-awesome to work correctly, some elements are rendered using buttons classes like:
 - btn
@@ -10,10 +12,6 @@ This widget needs bootstrap and font-awesome to work correctly, some elements ar
 - btn-info
 - btn-default
 - btn-success
-
-# CheckMate Health Monitoring
-
-CheckMate is a JavaScript-based health check monitoring system designed to track the latency and status of various services (client or server). It provides an intuitive user interface that displays service statuses, latency information, and includes features like generating reports, copying details, and refreshing metrics at set intervals.
 
 ## Features
 

@@ -206,7 +206,7 @@ class CheckMate {
     }
 
     #updateIndicator(metric) {
-        const health = metric.value ? this.#evaluateHealth(metric, metric.value) : this.HEALTH_ENUM.FAILURE;
+        const health = metric.value ? this.#evaluateHealth(metric, metric.value) : CheckMate.HEALTH_ENUM.FAILURE;
         const indicatorElement = document.getElementById(metric.name);
         indicatorElement.style.color = health.color;
         indicatorElement.className = `fa kw-pulsing ${health.icon}`;
